@@ -1,0 +1,576 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lie Detector Game!</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        /* --- Base Styles & CSS Variables --- */
+        :root {
+            /* Default Theme (Playful Coral/Teal) */
+            --bg-color: #FFF0F5; /* Lavender Blush */
+            --main-container-bg: #ffffff;
+            --main-container-border: #4A5568; /* gray-700 */
+            --main-container-shadow: #4A5568;
+            --question-card-bg: #E6FFFA; /* teal-50 */
+            --question-card-border: #4FD1C5; /* teal-300 */
+            --question-card-shadow: #38B2AC; /* teal-400 */
+            --action-button-text: white;
+            --action-button-border: #2D3748; /* gray-800 */
+            --action-button-shadow: #2D3748;
+            --action-button-hover-shadow: #1A202C; /* gray-900 */
+            --action-button-active-shadow: #2D3748;
+            --reset-button-bg: #ED8936; /* orange-500 */
+            --reset-button-hover-bg: #DD6B20; /* orange-600 */
+            --reset-button-active-bg: #C05621; /* orange-700 */
+            --yes-button-bg: #48BB78; /* green-500 */
+            --yes-button-border: #2F855A; /* green-700 */
+            --yes-button-shadow: #2F855A;
+            --yes-button-hover-bg: #38A169; /* green-600 */
+            --yes-button-hover-shadow: #276749; /* green-800 */
+            --yes-button-active-bg: #2F855A;
+            --yes-button-active-shadow: #276749;
+            --no-button-bg: #F56565; /* red-500 */
+            --no-button-border: #C53030; /* red-700 */
+            --no-button-shadow: #C53030;
+            --no-button-hover-bg: #E53E3E; /* red-600 */
+            --no-button-hover-shadow: #9B2C2C; /* red-800 */
+            --no-button-active-bg: #C53030;
+            --no-button-active-shadow: #9B2C2C;
+            --result-area-bg: #FFFACD; /* Lemon Chiffon */
+            --result-area-border: #F6E05E; /* yellow-400 */
+            --result-area-shadow: #ECC94B; /* yellow-500 */
+            --result-text-color: #D69E2E; /* yellow-700 */
+            --thinking-text-color: #B7791F; /* yellow-800 */
+            --heading-color: #2D3748; /* gray-800 */
+            --subheading-color: #4A5568; /* gray-700 */
+            --question-text-color: #2C5282; /* blue-800 */
+            --label-color: #4A5568;
+            --footer-text-color: #718096; /* gray-600 */
+            --focus-ring-color: var(--reset-button-bg);
+            --theme-selector-bg: #E6FFFA;
+            --theme-selector-border: #4FD1C5;
+            --theme-selector-text: #2C5282;
+        }
+
+        /* --- Theme Definitions (Same as before) --- */
+        body[data-theme="ocean-blue"] { --bg-color: #E0F2FE; --main-container-bg: #ffffff; --main-container-border: #075985; --main-container-shadow: #075985; --question-card-bg: #CFFAFE; --question-card-border: #67E8F9; --question-card-shadow: #22D3EE; --action-button-border: #075985; --action-button-shadow: #075985; --action-button-hover-shadow: #075985; --action-button-active-shadow: #075985; --reset-button-bg: #38BDF8; --reset-button-hover-bg: #0EA5E9; --reset-button-active-bg: #0284C7; --yes-button-bg: #2DD4BF; --yes-button-border: #0D9488; --yes-button-shadow: #0D9488; --yes-button-hover-bg: #14B8A6; --yes-button-hover-shadow: #0F766E; --yes-button-active-bg: #0D9488; --yes-button-active-shadow: #0F766E; --no-button-bg: #60A5FA; --no-button-border: #2563EB; --no-button-shadow: #2563EB; --no-button-hover-bg: #3B82F6; --no-button-hover-shadow: #1D4ED8; --no-button-active-bg: #2563EB; --no-button-active-shadow: #1D4ED8; --result-area-bg: #A5F3FC; --result-area-border: #67E8F9; --result-area-shadow: #22D3EE; --result-text-color: #164E63; --thinking-text-color: #155E75; --heading-color: #0C4A6E; --subheading-color: #155E75; --question-text-color: #1E40AF; --label-color: #155E75; --footer-text-color: #0369A1; --focus-ring-color: var(--reset-button-bg); --theme-selector-bg: #A5F3FC; --theme-selector-border: #67E8F9; --theme-selector-text: #155E75; }
+        body[data-theme="forest-green"] { --bg-color: #ECFDF5; --main-container-bg: #ffffff; --main-container-border: #064E3B; --main-container-shadow: #064E3B; --question-card-bg: #D1FAE5; --question-card-border: #6EE7B7; --question-card-shadow: #34D399; --action-button-border: #064E3B; --action-button-shadow: #064E3B; --action-button-hover-shadow: #064E3B; --action-button-active-shadow: #064E3B; --reset-button-bg: #A3E635; --reset-button-hover-bg: #84CC16; --reset-button-active-bg: #65A30D; --yes-button-bg: #4ADE80; --yes-button-border: #16A34A; --yes-button-shadow: #16A34A; --yes-button-hover-bg: #22C55E; --yes-button-hover-shadow: #15803D; --yes-button-active-bg: #16A34A; --yes-button-active-shadow: #15803D; --no-button-bg: #FACC15; --no-button-border: #CA8A04; --no-button-shadow: #CA8A04; --no-button-hover-bg: #EAB308; --no-button-hover-shadow: #A16207; --no-button-active-bg: #CA8A04; --no-button-active-shadow: #A16207; --result-area-bg: #A7F3D0; --result-area-border: #6EE7B7; --result-area-shadow: #34D399; --result-text-color: #047857; --thinking-text-color: #065F46; --heading-color: #065F46; --subheading-color: #065F46; --question-text-color: #065F46; --label-color: #065F46; --footer-text-color: #047857; --focus-ring-color: var(--reset-button-bg); --theme-selector-bg: #A7F3D0; --theme-selector-border: #6EE7B7; --theme-selector-text: #065F46; }
+        body[data-theme="cosmic-purple"] { --bg-color: #F5F3FF; --main-container-bg: #1E1B4B; --main-container-border: #A78BFA; --main-container-shadow: #A78BFA; --question-card-bg: #3730A3; --question-card-border: #C4B5FD; --question-card-shadow: #A78BFA; --action-button-text: #1E1B4B; --action-button-border: #A78BFA; --action-button-shadow: #A78BFA; --action-button-hover-shadow: #A78BFA; --action-button-active-shadow: #A78BFA; --reset-button-bg: #F472B6; --reset-button-hover-bg: #EC4899; --reset-button-active-bg: #DB2777; --yes-button-bg: #A78BFA; --yes-button-border: #7C3AED; --yes-button-shadow: #7C3AED; --yes-button-hover-bg: #8B5CF6; --yes-button-hover-shadow: #6D28D9; --yes-button-active-bg: #7C3AED; --yes-button-active-shadow: #6D28D9; --no-button-bg: #F0ABFC; --no-button-border: #C026D3; --no-button-shadow: #C026D3; --no-button-hover-bg: #E879F9; --no-button-hover-shadow: #A21CAF; --no-button-active-bg: #C026D3; --no-button-active-shadow: #A21CAF; --result-area-bg: #4338CA; --result-area-border: #A78BFA; --result-area-shadow: #A78BFA; --result-text-color: #C4B5FD; --thinking-text-color: #A78BFA; --heading-color: #EDE9FE; --subheading-color: #C4B5FD; --question-text-color: #DDD6FE; --label-color: #C4B5FD; --footer-text-color: #A78BFA; --focus-ring-color: var(--reset-button-bg); --theme-selector-bg: #4338CA; --theme-selector-border: #A78BFA; --theme-selector-text: #EEF2FF; }
+        body[data-theme="sunny-yellow"] { --bg-color: #FEF9C3; --main-container-bg: #ffffff; --main-container-border: #CA8A04; --main-container-shadow: #CA8A04; --question-card-bg: #FEF08A; --question-card-border: #FACC15; --question-card-shadow: #EAB308; --action-button-border: #CA8A04; --action-button-shadow: #CA8A04; --action-button-hover-shadow: #CA8A04; --action-button-active-shadow: #CA8A04; --reset-button-bg: #FB923C; --reset-button-hover-bg: #F97316; --reset-button-active-bg: #EA580C; --yes-button-bg: #FACC15; --yes-button-border: #CA8A04; --yes-button-shadow: #CA8A04; --yes-button-hover-bg: #EAB308; --yes-button-hover-shadow: #A16207; --yes-button-active-bg: #CA8A04; --yes-button-active-shadow: #A16207; --no-button-bg: #FDBA74; --no-button-border: #C2410C; --no-button-shadow: #C2410C; --no-button-hover-bg: #FB923C; --no-button-hover-shadow: #9A3412; --no-button-active-bg: #EA580C; --no-button-active-shadow: #9A3412; --result-area-bg: #FEF3C7; --result-area-border: #FDE047; --result-area-shadow: #EAB308; --result-text-color: #854D0E; --thinking-text-color: #A16207; --heading-color: #B45309; --subheading-color: #A16207; --question-text-color: #B45309; --label-color: #A16207; --footer-text-color: #B45309; --focus-ring-color: var(--reset-button-bg); --theme-selector-bg: #FEF3C7; --theme-selector-border: #FDE047; --theme-selector-text: #854D0E; }
+        body[data-theme="candy-pink"] { --bg-color: #FDF2F8; --main-container-bg: #ffffff; --main-container-border: #9D174D; --main-container-shadow: #9D174D; --question-card-bg: #FCE7F3; --question-card-border: #F9A8D4; --question-card-shadow: #F472B6; --action-button-border: #9D174D; --action-button-shadow: #9D174D; --action-button-hover-shadow: #9D174D; --action-button-active-shadow: #9D174D; --reset-button-bg: #A78BFA; --reset-button-hover-bg: #8B5CF6; --reset-button-active-bg: #7C3AED; --yes-button-bg: #F472B6; --yes-button-border: #DB2777; --yes-button-shadow: #DB2777; --yes-button-hover-bg: #EC4899; --yes-button-hover-shadow: #BE185D; --yes-button-active-bg: #DB2777; --yes-button-active-shadow: #BE185D; --no-button-bg: #F0ABFC; --no-button-border: #C026D3; --no-button-shadow: #C026D3; --no-button-hover-bg: #E879F9; --no-button-hover-shadow: #A21CAF; --no-button-active-bg: #C026D3; --no-button-active-shadow: #A21CAF; --result-area-bg: #FBCFE8; --result-area-border: #F9A8D4; --result-area-shadow: #F472B6; --result-text-color: #9D174D; --thinking-text-color: #BE185D; --heading-color: #831843; --subheading-color: #BE185D; --question-text-color: #BE185D; --label-color: #BE185D; --footer-text-color: #9D174D; --focus-ring-color: var(--reset-button-bg); --theme-selector-bg: #FBCFE8; --theme-selector-border: #F9A8D4; --theme-selector-text: #9D174D; }
+        body[data-theme="night-mode"] { --bg-color: #111827; --main-container-bg: #1F2937; --main-container-border: #6B7280; --main-container-shadow: #9CA3AF; --question-card-bg: #374151; --question-card-border: #9CA3AF; --question-card-shadow: #D1D5DB; --action-button-text: #111827; --action-button-border: #9CA3AF; --action-button-shadow: #9CA3AF; --action-button-hover-shadow: #D1D5DB; --action-button-active-shadow: #6B7280; --reset-button-bg: #60A5FA; --reset-button-hover-bg: #3B82F6; --reset-button-active-bg: #2563EB; --yes-button-bg: #34D399; --yes-button-border: #A7F3D0; --yes-button-shadow: #A7F3D0; --yes-button-hover-bg: #6EE7B7; --yes-button-hover-shadow: #D1FAE5; --yes-button-active-bg: #10B981; --yes-button-active-shadow: #A7F3D0; --no-button-bg: #F87171; --no-button-border: #FECACA; --no-button-shadow: #FECACA; --no-button-hover-bg: #FCA5A5; --no-button-hover-shadow: #FEE2E2; --no-button-active-bg: #EF4444; --no-button-active-shadow: #FECACA; --result-area-bg: #4B5563; --result-area-border: #9CA3AF; --result-area-shadow: #D1D5DB; --result-text-color: #ECFDF5; --thinking-text-color: #D1D5DB; --heading-color: #F9FAFB; --subheading-color: #E5E7EB; --question-text-color: #E5E7EB; --label-color: #E5E7EB; --footer-text-color: #9CA3AF; --focus-ring-color: var(--reset-button-bg); --theme-selector-bg: #4B5563; --theme-selector-border: #9CA3AF; --theme-selector-text: #F9FAFB; }
+
+        /* --- General Styles (Mostly same as before, minor tweaks) --- */
+        html, body { height: 100%; }
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: var(--bg-color);
+            display: flex;
+            flex-direction: column;
+            margin: 0;
+            padding-top: 5rem; /* Space for theme selector */
+            position: relative;
+            transition: background-color 0.3s ease;
+            overflow-x: hidden;
+        }
+        main { flex-grow: 1; }
+
+        .main-container {
+            background-color: var(--main-container-bg);
+            border: 3px solid var(--main-container-border);
+            border-radius: 20px;
+            box-shadow: 8px 8px 0px var(--main-container-shadow);
+            width: 100%;
+            max-width: 42rem;
+            margin: 2rem auto 1rem auto; /* Default margin */
+            padding: 1.5rem sm:p-8;
+            text-align: center;
+            flex-shrink: 0;
+            transition: background-color 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .question-card {
+            background-color: var(--question-card-bg);
+            border: 2px solid var(--question-card-border);
+            border-radius: 16px;
+            box-shadow: 4px 4px 0px var(--question-card-shadow);
+            padding: 2rem 1.5rem;
+            margin-top: 1.5rem;
+            min-height: 180px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: space-around;
+            transition: background-color 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease, transform 0.2s ease; /* Added transform transition */
+        }
+        /* Add a subtle animation on question change */
+        .question-card.changing {
+            transform: scale(0.95);
+            opacity: 0.7;
+        }
+
+
+        /* Action Button Styles */
+        .action-button {
+            color: var(--action-button-text);
+            font-weight: 700;
+            padding: 0.8rem 1.8rem;
+            border-radius: 1rem;
+            border: 3px solid var(--action-button-border);
+            box-shadow: 5px 5px 0px var(--action-button-shadow);
+            transition: all 0.15s ease-out;
+            cursor: pointer;
+            display: inline-flex; align-items: center; justify-content: center; gap: 0.5rem;
+            text-transform: uppercase; letter-spacing: 0.05em; font-size: 1rem;
+            min-width: 120px;
+            transform-style: preserve-3d;
+        }
+        .action-button:hover {
+             box-shadow: 6px 6px 0px var(--action-button-hover-shadow);
+             transform: translateY(-3px) translateX(-2px) translateZ(5px);
+        }
+        .action-button:active {
+             box-shadow: 2px 2px 0px var(--action-button-active-shadow);
+             transform: translateY(2px) translateX(2px) translateZ(0px);
+        }
+         .action-button:focus {
+             outline: none;
+             box-shadow: 5px 5px 0px var(--action-button-shadow), 0 0 0 3px var(--bg-color), 0 0 0 5px var(--focus-ring-color);
+         }
+        #resetBtn { background-color: var(--reset-button-bg); border-color: var(--action-button-border); box-shadow: 5px 5px 0px var(--action-button-shadow); }
+        #resetBtn:hover { background-color: var(--reset-button-hover-bg); box-shadow: 6px 6px 0px var(--action-button-hover-shadow); }
+        #resetBtn:active { background-color: var(--reset-button-active-bg); box-shadow: 2px 2px 0px var(--action-button-active-shadow); }
+        #resetBtn:focus { box-shadow: 5px 5px 0px var(--action-button-shadow), 0 0 0 3px var(--bg-color), 0 0 0 5px var(--reset-button-bg); }
+        .yes-button { background-color: var(--yes-button-bg); border-color: var(--yes-button-border); box-shadow: 5px 5px 0px var(--yes-button-shadow); }
+        .yes-button:hover { background-color: var(--yes-button-hover-bg); box-shadow: 6px 6px 0px var(--yes-button-hover-shadow); }
+        .yes-button:active { background-color: var(--yes-button-active-bg); box-shadow: 2px 2px 0px var(--yes-button-active-shadow); }
+        .yes-button:focus { box-shadow: 5px 5px 0px var(--yes-button-shadow), 0 0 0 3px var(--bg-color), 0 0 0 5px var(--yes-button-bg); }
+        .no-button { background-color: var(--no-button-bg); border-color: var(--no-button-border); box-shadow: 5px 5px 0px var(--no-button-shadow); }
+        .no-button:hover { background-color: var(--no-button-hover-bg); box-shadow: 6px 6px 0px var(--no-button-hover-shadow); }
+        .no-button:active { background-color: var(--no-button-active-bg); box-shadow: 2px 2px 0px var(--no-button-active-shadow); }
+        .no-button:focus { box-shadow: 5px 5px 0px var(--no-button-shadow), 0 0 0 3px var(--bg-color), 0 0 0 5px var(--no-button-bg); }
+
+        /* Result Area Styles */
+        #resultArea {
+            background-color: var(--result-area-bg);
+            border: 2px dashed var(--result-area-border);
+            border-radius: 16px;
+            box-shadow: 4px 4px 0px var(--result-area-shadow);
+            padding: 1.5rem;
+            margin-top: 1.5rem;
+            min-height: 120px;
+            text-align: center;
+            transition: opacity 0.5s ease-in-out, transform 0.5s ease-in-out, background-color 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease;
+            opacity: 0;
+            transform: scale(0.9) rotate(-2deg);
+        }
+        #resultArea.visible {
+            opacity: 1;
+            transform: scale(1) rotate(0deg);
+            /* Use keyframe animation */
+            animation: reveal 0.6s cubic-bezier(0.68, -0.55, 0.27, 1.55) forwards;
+        }
+        #resultText {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--result-text-color);
+            margin-bottom: 0.5rem;
+            transition: color 0.3s ease;
+            line-height: 1.4;
+        }
+        #thinkingText {
+            font-style: italic;
+            color: var(--thinking-text-color);
+            transition: color 0.3s ease;
+            font-size: 1.1rem;
+        }
+
+        /* Headings & Labels */
+        #questionText {
+            font-size: 1.3rem;
+            font-weight: 600;
+            color: var(--question-text-color);
+            margin-bottom: 1.5rem;
+            transition: color 0.3s ease;
+            line-height: 1.5;
+        }
+        .main-heading {
+            color: var(--heading-color);
+            transition: color 0.3s ease;
+            padding-top: 1rem; /* Default padding */
+        }
+        .sub-heading {
+            color: var(--subheading-color);
+            transition: color 0.3s ease;
+            font-size: 1.1rem;
+            line-height: 1.6;
+        }
+
+        /* Footer Styling */
+        .page-footer {
+            text-align: center; padding: 1rem 0; margin-top: 1rem; font-size: 0.8rem; color: var(--footer-text-color); flex-shrink: 0; line-height: 1.5; transition: color 0.3s ease;
+        }
+        .page-footer p { margin-bottom: 0.25rem; }
+
+        /* Theme Selector Styles */
+        .theme-selector-container {
+            position: absolute; top: 1rem; right: 1rem; z-index: 10;
+        }
+        .theme-selector-label {
+             position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0, 0, 0, 0); white-space: nowrap; border-width: 0;
+        }
+        #themeSelector {
+            padding: 0.4rem 0.8rem; border-radius: 8px; border: 2px solid var(--theme-selector-border); background-color: var(--theme-selector-bg); color: var(--theme-selector-text); font-weight: 500; cursor: pointer; box-shadow: 2px 2px 0px var(--theme-selector-border); transition: all 0.2s ease; vertical-align: middle; font-size: 0.8rem;
+        }
+        #themeSelector:focus {
+            outline: none; box-shadow: 2px 2px 0px var(--theme-selector-border), 0 0 0 3px var(--main-container-bg), 0 0 0 5px var(--theme-selector-border);
+        }
+
+        /* Dark Theme Adjustments */
+        body[data-theme="cosmic-purple"] .main-heading svg,
+        body[data-theme="night-mode"] .main-heading svg {
+             color: #F472B6;
+        }
+         body[data-theme="cosmic-purple"] .sub-heading,
+         body[data-theme="night-mode"] .sub-heading {
+             color: #D1D5DB;
+         }
+         body[data-theme="cosmic-purple"] #themeSelector:focus,
+         body[data-theme="night-mode"] #themeSelector:focus {
+             box-shadow: 2px 2px 0px var(--theme-selector-border), 0 0 0 3px var(--main-container-bg), 0 0 0 5px var(--theme-selector-border);
+         }
+
+        /* Hide class utility */
+        .hidden { display: none; }
+
+        /* Animation for result reveal */
+        @keyframes reveal {
+            from { transform: scale(0.8) rotate(-5deg); opacity: 0; }
+            to { transform: scale(1) rotate(0deg); opacity: 1; }
+        }
+
+    </style>
+</head>
+<body class="p-4 md:p-6">
+
+    <div class="theme-selector-container">
+        <label for="themeSelector" class="theme-selector-label">Choose a Theme:</label>
+        <select id="themeSelector">
+            <option value="default">🎨 Default</option>
+            <option value="ocean-blue">🌊 Ocean Blue</option>
+            <option value="forest-green">🌲 Forest Green</option>
+            <option value="cosmic-purple">✨ Cosmic Purple</option>
+            <option value="sunny-yellow">☀️ Sunny Yellow</option>
+            <option value="candy-pink">🍬 Candy Pink</option>
+            <option value="night-mode">🌙 Night Mode</option>
+        </select>
+    </div>
+
+    <main>
+        <div class="main-container">
+            <h1 class="main-heading text-3xl sm:text-4xl font-bold text-center mb-6 tracking-tight flex items-center justify-center gap-3">
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-9 h-9 text-blue-600">
+                  <path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-5.197-5.197m0 0A7.5 7.5 0 105.196 5.196a7.5 7.5 0 0010.607 10.607z" />
+                </svg>
+                 Lie Detector Game <span class="text-2xl">🕵️‍♀️</span>
+            </h1>
+
+            <p class="sub-heading text-center mb-6">Answer these 5 questions honestly... or maybe not! 😉 Let's see if I can guess which one you fibbed on!</p>
+
+            <div id="gameArea">
+                <div id="questionCard" class="question-card hidden">
+                    <p id="questionText">Question goes here...</p>
+                    <div class="flex flex-col sm:flex-row gap-4 mt-4">
+                         <button id="yesBtn" class="action-button yes-button">👍 Yes!</button>
+                         <button id="noBtn" class="action-button no-button">👎 Nope!</button>
+                    </div>
+                </div>
+            </div>
+
+            <div id="resultArea" class="hidden">
+                <p id="thinkingText">Analyzing your answers... 🤔</p>
+                <p id="resultText"></p>
+                 <button id="resetBtn" class="action-button mt-4">Play Again? 🔁</button>
+            </div>
+
+        </div>
+    </main>
+
+    <footer class="page-footer">
+        <p>© 2025 ToolForge. All rights reserved.</p>
+        <p>Built with ❤️ by Anas.</p>
+    </footer>
+
+    <script>
+        // --- DOM Elements ---
+        const gameArea = document.getElementById('gameArea');
+        const questionCard = document.getElementById('questionCard');
+        const questionText = document.getElementById('questionText');
+        const yesBtn = document.getElementById('yesBtn');
+        const noBtn = document.getElementById('noBtn');
+        const resultArea = document.getElementById('resultArea');
+        const thinkingText = document.getElementById('thinkingText');
+        const resultText = document.getElementById('resultText');
+        const resetBtn = document.getElementById('resetBtn');
+        const themeSelector = document.getElementById('themeSelector');
+
+        // --- Game Logic ---
+
+        // Pool of 100 kid-friendly yes/no questions
+        const questionPool = [
+            "Do you like broccoli? 🥦",
+            "Is blue your favorite color? 💙",
+            "Have you ever seen a unicorn? 🦄",
+            "Do you think dogs can talk? 🐶",
+            "Is ice cream better than cake? 🍦",
+            "Can you fly like a bird? 🐦",
+            "Do you like rainy days? ☔",
+            "Is it fun to jump in puddles? 💦",
+            "Do you have a secret hideout? 🌳",
+            "Are monsters real? 👾",
+            "Do you like drawing pictures? 🖍️",
+            "Is math your favorite subject? ➕",
+            "Can fish live out of water? 🐠",
+            "Do you enjoy reading books? 📚",
+            "Is it fun to build with blocks? 🧱",
+            "Do you believe in magic? ✨",
+            "Are spiders scary? 🕷️",
+            "Do you like going to the park? 🏞️",
+            "Is it okay to eat dessert before dinner? 🍪",
+            "Can you touch the clouds? ☁️",
+            "Do you like singing songs? 🎶",
+            "Is hide-and-seek the best game? 👀",
+            "Do you wish you had a pet dragon? 🐉",
+            "Are vegetables yucky? 🥕",
+            "Do you like playing dress-up? 👑",
+            "Is it fun to ride a bike? 🚲",
+            "Can cats swim? 🐈",
+            "Do you like telling jokes? 😂",
+            "Is it better to be hot or cold? ☀️❄️",
+            "Do you think aliens exist? 👽",
+            "Do you like learning new things? 🧠",
+            "Is it fun to go camping? 🏕️",
+            "Can you breathe underwater? 🌊",
+            "Do you like helping others? 🤗",
+            "Is chocolate the best candy? 🍫",
+            "Do you wish school was all year round? 🏫",
+            "Are ghosts friendly? 👻",
+            "Do you like watching cartoons? 📺",
+            "Is it easy to wake up early? ⏰",
+            "Can plants feel pain? 🌱",
+            "Do you like making new friends? 🤝",
+            "Is it fun to dance? 💃",
+            "Do you think robots will take over the world? 🤖",
+            "Are carrots good for your eyes? 🥕",
+            "Do you like going on swings? <0xF0><0x9F><0xAA><0x9A>", // Swing emoji
+            "Is it important to share your toys? 🧸",
+            "Can penguins fly? 🐧",
+            "Do you like surprises? 🎁",
+            "Is it fun to play in the snow? ☃️",
+            "Do you think fairies live in the forest? 🧚",
+            "Are snakes slimy? 🐍",
+            "Do you like visiting the zoo? 🦁",
+            "Is it okay to tell a small white lie sometimes? 🤔",
+            "Can you run faster than a cheetah? 🐆",
+            "Do you like eating fruit? 🍎",
+            "Is it fun to play board games? 🎲",
+            "Do you believe in Santa Claus? 🎅",
+            "Are clowns funny or scary? 🤡",
+            "Do you like helping with chores? 🧹",
+            "Is it better to give or receive presents? 💝",
+            "Can you talk to animals? 🦜",
+            "Do you like going to the beach? 🏖️",
+            "Is it fun to learn instruments? 🎸",
+            "Do you think mermaids are real? 🧜‍♀️",
+            "Are bees important? 🐝",
+            "Do you like solving puzzles? 🧩",
+            "Is it okay to be different? 😊",
+            "Can you jump over the moon? 🌕",
+            "Do you like watching movies? 🎬",
+            "Is it fun to go on slides? <0xF0><0x9F><0x9D><0xBD>", // Playground slide emoji
+            "Do you think wishes come true? 🌠",
+            "Are dinosaurs still alive? 🦖",
+            "Do you like helping cook? 🍳",
+            "Is it important to brush your teeth? 🦷",
+            "Can you see in the dark? 🌃",
+            "Do you like playing video games? 🎮",
+            "Is it fun to tell stories? 📖",
+            "Do you think pirates buried treasure? ☠️",
+            "Are butterflies beautiful? 🦋",
+            "Do you like going on adventures? 🗺️",
+            "Is it okay to make mistakes? 👍",
+            "Can you climb a rainbow? 🌈",
+            "Do you like playing sports? ⚽",
+            "Is it fun to have sleepovers? 😴",
+            "Do you think talking animals are in cartoons only? 🐿️",
+            "Are stars really far away? ⭐",
+            "Do you like helping in the garden? 🌻",
+            "Is it important to be kind? 🥰",
+            "Can you walk on water? 🚶‍♂️",
+            "Do you like building sandcastles? 🏰",
+            "Is it fun to learn coding? 💻",
+            "Do you think gnomes protect gardens? <0xF0><0x9F><0xA7><0x97>", // Gnome emoji
+            "Are volcanoes dangerous? 🌋",
+            "Do you like cloud gazing? ☁️",
+            "Is it okay to ask for help? 🙏",
+            "Can you shrink yourself small? <0xF0><0x9F><0xA7><0xBC>", // Nesting dolls emoji
+            "Do you like theme parks? 🎢",
+            "Is it fun to make crafts? ✂️",
+            "Do you think wizards exist? 🧙",
+            "Are turtles slow? 🐢"
+        ];
+
+        let currentQuestionIndex = 0;
+        let userAnswers = []; // Stores answers as true (yes) or false (no)
+        let currentRoundQuestions = []; // Stores the 5 questions for the current round
+
+        // --- Functions ---
+
+        /**
+         * Shuffles an array in place using the Fisher-Yates algorithm.
+         * @param {Array} array - The array to shuffle.
+         */
+        function shuffleArray(array) {
+            for (let i = array.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [array[i], array[j]] = [array[j], array[i]]; // Swap elements
+            }
+        }
+
+        /**
+         * Selects 5 unique random questions from the main pool.
+         * @returns {string[]} An array of 5 question strings.
+         */
+        function selectRandomQuestions() {
+            const shuffledPool = [...questionPool]; // Create a copy to avoid modifying the original
+            shuffleArray(shuffledPool);
+            return shuffledPool.slice(0, 5); // Take the first 5 shuffled questions
+        }
+
+        /**
+         * Displays the current question card.
+         * @param {number} index - The index of the current question (0-4).
+         */
+        function displayQuestion(index) {
+            if (index < currentRoundQuestions.length) {
+                questionText.textContent = `"${currentRoundQuestions[index]}"`; // Display selected question
+                questionCard.classList.remove('hidden', 'changing'); // Show question card, remove changing class
+                resultArea.classList.add('hidden');
+                resultArea.classList.remove('visible');
+            } else {
+                // All questions asked, show the result
+                showResult();
+            }
+        }
+
+        /**
+         * Handles the user's answer (Yes/No) and proceeds to the next question or result.
+         * @param {boolean} answerValue - True if the user clicked "Yes", false otherwise.
+         */
+        function handleAnswer(answerValue) {
+            userAnswers[currentQuestionIndex] = answerValue;
+            currentQuestionIndex++;
+
+            // Add visual feedback for transition
+            questionCard.classList.add('changing');
+            setTimeout(() => {
+                displayQuestion(currentQuestionIndex);
+            }, 200); // Match transition duration
+        }
+
+        /**
+         * Simulates lie detection and displays the result.
+         */
+        function showResult() {
+            questionCard.classList.add('hidden');
+            resultArea.classList.remove('hidden');
+            resultText.textContent = '';
+            thinkingText.textContent = 'Analyzing micro-expressions... 😉';
+            thinkingText.style.display = 'block';
+            resultArea.classList.remove('visible'); // Prepare for animation
+
+            setTimeout(() => {
+                thinkingText.textContent = 'Cross-referencing patterns... 🧐';
+            }, 1200);
+
+            setTimeout(() => {
+                const lieIndex = detectLie(userAnswers); // Use the same detection logic
+
+                if (lieIndex !== -1 && lieIndex < currentRoundQuestions.length) { // Check index validity
+                     // Use innerHTML to allow formatting tags
+                     resultText.innerHTML = `Aha! My sensors indicate you might have been <span class="font-bold text-red-600 animate-pulse">fibbing</span> on question ${lieIndex + 1}: <br/> <span class="italic">"${currentRoundQuestions[lieIndex]}"</span> <br/> Did I get it right?! 😄`;
+                } else {
+                    resultText.textContent = "You're a tough one to read! Maybe you told the truth on all of them? Or you're a master fibber! 😉";
+                }
+
+                thinkingText.style.display = 'none';
+                resultArea.classList.add('visible'); // Trigger animation
+            }, 2800);
+        }
+
+        /**
+         * Fake Lie Detection Logic (same as before).
+         * @param {boolean[]} answers - Array of user's boolean answers (length 5).
+         * @returns {number} - The index (0-4) of the suspected lie.
+         */
+        function detectLie(answers) {
+            if (answers.length !== 5) return 2; // Default if something went wrong
+
+            let yesCount = answers.filter(answer => answer === true).length;
+            let noCount = 5 - yesCount;
+
+            let suspectedLieIndex = 2; // Default guess (middle question)
+
+            if (yesCount > noCount) { // Majority Yes? Suspect first No.
+                const firstNo = answers.findIndex(answer => answer === false);
+                if (firstNo !== -1) suspectedLieIndex = firstNo;
+            } else if (noCount > yesCount) { // Majority No? Suspect first Yes.
+                const firstYes = answers.findIndex(answer => answer === true);
+                if (firstYes !== -1) suspectedLieIndex = firstYes;
+            }
+            // If balanced or all same, it defaults to 2.
+
+            return suspectedLieIndex;
+        }
+
+        /**
+         * Resets the game state to start over with new random questions.
+         */
+        function resetGame() {
+            currentQuestionIndex = 0;
+            userAnswers = [];
+            currentRoundQuestions = selectRandomQuestions(); // Select new questions
+            resultArea.classList.add('hidden');
+            resultArea.classList.remove('visible');
+            questionCard.classList.remove('changing'); // Ensure changing class is removed
+            displayQuestion(currentQuestionIndex); // Show the first new question
+        }
+
+        // --- Theme Switching Logic (No localStorage) ---
+        function applyTheme(themeName) {
+            document.body.dataset.theme = themeName;
+        }
+
+        themeSelector.addEventListener('change', (event) => {
+            applyTheme(event.target.value);
+        });
+
+        // --- Event Listeners ---
+        yesBtn.addEventListener('click', () => handleAnswer(true));
+        noBtn.addEventListener('click', () => handleAnswer(false));
+        resetBtn.addEventListener('click', resetGame);
+
+        // --- Initial Load ---
+        applyTheme(themeSelector.value || 'default');
+        currentRoundQuestions = selectRandomQuestions(); // Select initial questions
+        displayQuestion(currentQuestionIndex); // Start the game
+
+    </script>
+
+</body>
+</html>
